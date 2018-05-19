@@ -1,6 +1,8 @@
 Django - Hush, Rest.
 ====================
 
+[![CircleCI](https://circleci.com/gh/lwakefield/django-hush-rest/tree/master.svg?style=svg)](https://circleci.com/gh/lwakefield/django-hush-rest/tree/master)
+
 `djangohushrest` provides a base for simple restful django resources.
 
 ## Philosopy
