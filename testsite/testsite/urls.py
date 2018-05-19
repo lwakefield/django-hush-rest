@@ -13,14 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from datetime import datetime
-
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
 from django.http import HttpResponse
 from django.core.serializers import serialize
-import json
 
 from hushrest import Resource
 
@@ -32,10 +29,9 @@ class QuestionsResource(Resource):
         questions = Question.objects.all()
         return questions
 
-    def create(self, request, *args, **kwargs):
+    def store(self, request, *args, **kwargs):
         return Question.objects.create(
-            question_text=request.json['question_text'],
-            pub_date=datetime.now()
+            question_text=request.json['question_text']
         )
 
     def show(self, request, object_id):
@@ -58,7 +54,7 @@ class ChoicesResource(Resource):
         choices = Choice.objects.filter(question_id=question_id).all()
         return choices
 
-    def create(self, request, question_id):
+    def store(self, request, question_id):
         return Choice.objects.create(
             question_id=question_id,
             choice_text=request.json['choice_text'],

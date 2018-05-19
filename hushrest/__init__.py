@@ -1,7 +1,7 @@
 import json
 
 from django.urls import path
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.core.serializers import serialize
 from django.db.models import Model, QuerySet
 from django.forms.models import model_to_dict
@@ -14,12 +14,12 @@ class Resource:
         request.json = json.loads(request.body) if request.body else None
 
         fn = None
-        if getattr(self, request.method.lower()):
+        if hasattr(self, request.method.lower()):
             fn = getattr(self, request.method.lower())
         elif request.method in {'HEAD', 'GET'}:
             fn = self.list
         elif request.method == 'POST':
-            fn = self.create
+            fn = self.store
         else:
             return HttpResponseBadRequest()
 
@@ -83,19 +83,19 @@ class Resource:
 
         return result
 
-    def list(self):
+    def list(self, *args, **kwargs):
         return HttpResponseNotFound()
 
-    def create(self):
+    def store(self, *args, **kwargs):
         return HttpResponseNotFound()
 
-    def show(self):
+    def show(self, *args, **kwargs):
         return HttpResponseNotFound()
 
-    def update(self):
+    def update(self, *args, **kwargs):
         return HttpResponseNotFound()
 
-    def destroy(self):
+    def destroy(self, *args, **kwargs):
         return HttpResponseNotFound()
 
     @classmethod
