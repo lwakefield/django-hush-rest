@@ -19,7 +19,7 @@ from django.conf.urls import url, include
 from django.http import HttpResponse
 from django.core.serializers import serialize
 
-from hushrest import Resource
+from djangohushrest import Resource
 
 from polls.models import Choice, Question
 
