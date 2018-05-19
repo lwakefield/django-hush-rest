@@ -28,7 +28,7 @@ from polls.models import Choice, Question
 
 
 class QuestionsResource(Resource):
-    def list(self, request, *args, **kwargs):
+    def list(self, request):
         questions = Question.objects.all()
         return questions
 
@@ -38,7 +38,7 @@ class QuestionsResource(Resource):
             pub_date=datetime.now()
         )
 
-    def get(self, request, object_id):
+    def show(self, request, object_id):
         return Question.objects.get(id=object_id)
 
     def update(self, request, object_id):
@@ -47,12 +47,37 @@ class QuestionsResource(Resource):
         question.save()
         return question
 
-    def delete(self, request, object_id):
+    def destroy(self, request, object_id):
         question = Question.objects.get(id=object_id)
         question.delete()
         return HttpResponse(status=204)
 
+
+class ChoicesResource(Resource):
+    def list(self, request, question_id):
+        choices = Choice.objects.filter(question_id=question_id).all()
+        return choices
+
+    def create(self, request, question_id):
+        return Choice.objects.create(
+            question_id=question_id,
+            choice_text=request.json['choice_text'],
+        )
+
+    def show(self, request, question_id, object_id):
+        return Choice.objects.get(id=object_id)
+
+
+class VoteResource(Resource):
+    def post(self, request, question_id, choice_id):
+        choice = Choice.objects.get(id=choice_id)
+        choice.votes += 1
+        choice.save()
+        return choice
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^api/questions/', include(QuestionsResource.urls())),
+    path('api/questions/', include(QuestionsResource.urls())),
+    path('api/questions/<question_id>/choices/', include(ChoicesResource.urls())),
+    path('api/questions/<question_id>/choices/<choice_id>/vote/', include(VoteResource.urls())),
 ]

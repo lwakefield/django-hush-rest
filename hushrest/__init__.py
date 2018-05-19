@@ -14,7 +14,9 @@ class Resource:
         request.json = json.loads(request.body) if request.body else None
 
         fn = None
-        if request.method in {'HEAD', 'GET'}:
+        if getattr(self, request.method.lower()):
+            fn = getattr(self, request.method.lower())
+        elif request.method in {'HEAD', 'GET'}:
             fn = self.list
         elif request.method == 'POST':
             fn = self.create
@@ -29,11 +31,11 @@ class Resource:
 
         fn = None
         if request.method in {'HEAD', 'GET'}:
-            fn = self.get
+            fn = self.show
         elif request.method in {'PUT', 'PATCH'}:
             fn = self.update
         elif request.method == 'DELETE':
-            fn = self.delete
+            fn = self.destroy
         else:
             return HttpResponseBadRequest()
 
@@ -87,13 +89,13 @@ class Resource:
     def create(self):
         return HttpResponseNotFound()
 
-    def get(self):
+    def show(self):
         return HttpResponseNotFound()
 
     def update(self):
         return HttpResponseNotFound()
 
-    def delete(self):
+    def destroy(self):
         return HttpResponseNotFound()
 
     @classmethod
