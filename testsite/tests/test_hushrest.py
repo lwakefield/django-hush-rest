@@ -126,3 +126,34 @@ class TestResources(TestCase):
         assert response.json()['id'] is not None
         assert response.json()['choice_text'] == 'bar'
         assert response.json()['votes'] == 1
+
+    def test_blacklist_for_list(self):
+        question = Question.objects.create(question_text='foo')
+        response = self.client.get('/api/test/blacklist/')
+        assert response.status_code == 200
+        json = response.json()
+        assert len(json) == 1
+        assert json[0]['id'] is not None
+        assert json[0]['question_text'] == 'foo'
+        assert 'pub_date' not in json[0]
+
+    def test_blacklist_for_show(self):
+        question = Question.objects.create(question_text='foo')
+        response = self.client.get('/api/test/blacklist/%s' % question.id)
+        assert response.status_code == 200
+        json = response.json()
+        assert json['id'] is not None
+        assert json['question_text'] == 'foo'
+        assert 'pub_date' not in json
+
+    def test_whitelist_for_list(self):
+        question = Question.objects.create(question_text='foo')
+        response = self.client.get('/api/test/whitelist/')
+        assert response.status_code == 200
+        assert response.json() == [{ 'id': question.id }]
+
+    def test_whitelist_for_show(self):
+        question = Question.objects.create(question_text='foo')
+        response = self.client.get('/api/test/whitelist/%s' % question.id)
+        assert response.status_code == 200
+        assert response.json() == { 'id': question.id }

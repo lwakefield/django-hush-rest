@@ -26,8 +26,7 @@ from polls.models import Choice, Question
 
 class QuestionsResource(Resource):
     def list(self, request):
-        questions = Question.objects.all()
-        return questions
+        return Question.objects.all()
 
     def store(self, request, *args, **kwargs):
         return Question.objects.create(
@@ -51,8 +50,7 @@ class QuestionsResource(Resource):
 
 class ChoicesResource(Resource):
     def list(self, request, question_id):
-        choices = Choice.objects.filter(question_id=question_id).all()
-        return choices
+        return Choice.objects.filter(question_id=question_id).all()
 
     def store(self, request, question_id):
         return Choice.objects.create(
@@ -71,9 +69,32 @@ class VoteResource(Resource):
         choice.save()
         return choice
 
+
+class TestBlacklistResource(Resource):
+    blacklist = {'pub_date'}
+
+    def list(self, request):
+        return Question.objects.all()
+
+    def show(self, request, object_id):
+        return Question.objects.get(id=object_id)
+
+
+class TestWhitelistResource(Resource):
+    whitelist = {'id'}
+
+    def list(self, request):
+        return Question.objects.all()
+
+    def show(self, request, object_id):
+        return Question.objects.get(id=object_id)
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/questions/', include(QuestionsResource.urls())),
     path('api/questions/<question_id>/choices/', include(ChoicesResource.urls())),
     path('api/questions/<question_id>/choices/<choice_id>/vote/', include(VoteResource.urls())),
+    path('api/test/blacklist/', include(TestBlacklistResource.urls())),
+    path('api/test/whitelist/', include(TestWhitelistResource.urls())),
 ]
