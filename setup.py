@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name = 'djangohushrest',
     packages = ['djangohushrest'],
-    version = '1.0.0',  # Ideally should be same as your GitHub release tag varsion
+    version = '1.0.2',  # Ideally should be same as your GitHub release tag varsion
     description = 'djangohushrest provides a base for simple restful Django resources.',
     author = 'Lawrence Wakefield',
     author_email = 'lawrence@iamlawrence.me',
