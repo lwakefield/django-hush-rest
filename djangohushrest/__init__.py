@@ -11,7 +11,7 @@ class Resource:
     whitelist = {}
 
     def parent(self, request, *args, **kwargs):
-        request.json = json.loads(request.body) if request.body else None
+        request.json = json.loads(str(request.body)) if request.body else None
 
         fn = None
         if hasattr(self, request.method.lower()):
